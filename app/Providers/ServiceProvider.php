@@ -9,6 +9,7 @@
 namespace App\Providers;
 
 
+use App\Manager\ArticleManager;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 
@@ -38,14 +39,14 @@ class ServiceProvider extends BaseServiceProvider
 
     public function registerService()
     {
-//        $this->app->singleton('weedster.manager.login_manager', function () {
-//            return new LoginManager();
-//        });
+        $this->app->singleton('fiskkit.manager.article_manager', function () {
+            return new ArticleManager();
+        });
     }
 
     public function registerValidator()
     {
-        Validator::extend('is_valid_social_data', SocialDataValidator::class . '@handle');
+        //Validator::extend('is_valid_social_data', SocialDataValidator::class . '@handle');
     }
 
     protected function defineResources()

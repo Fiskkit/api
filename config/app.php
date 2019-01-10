@@ -174,6 +174,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        \App\Providers\ServiceProvider::class,
 
     ],
 
@@ -225,5 +226,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
     ],
+
+    'app_url'=>env('APP_URL','https://api.fiskkit.app'),
 
 ];

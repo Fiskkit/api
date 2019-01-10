@@ -3,7 +3,14 @@
 /public/storage
 /storage/*.key
 /vendor
+/bootstrap/compiled.php
+
+/build/logs
+/build/coverage
+
 /.idea
+/_ide_helper.php
+
 .env
 .phpunit.result.cache
 Homestead.json
@@ -12,3 +19,7 @@ npm-debug.log
 yarn-error.log
 /storage
 composer.lock
+composer.phar
+
+/app/config/packages
+/public/packages
