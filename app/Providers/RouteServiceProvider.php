@@ -75,7 +75,7 @@ class RouteServiceProvider extends ServiceProvider
          *
          * @noinspection PhpUndefinedClassInspection
          */
-        Route::domain(config('app.app_url'))
+        Route::domain(config('app.api_url'))
             ->prefix('api/v1/')
             ->middleware('api')
             ->namespace('App\Http\Controllers')

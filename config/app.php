@@ -227,6 +227,6 @@ return [
 
     ],
 
-    'app_url'=>env('APP_URL','https://api.fiskkit.app'),
+    'api_url'=>env('API_URL','https://api.fiskkit.app'),
 
 ];
