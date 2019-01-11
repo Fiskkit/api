@@ -13,6 +13,8 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
+        "league/fractal": "^0.17.0",
+        "spatie/laravel-fractal": "^5.4",
         "zircote/swagger-php": "2.*"
     },
     "require-dev": {
