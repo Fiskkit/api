@@ -10,11 +10,17 @@ namespace App\Http\Controllers;
 
 
 use App\Requests\ArticleRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends ApiController
 {
     public function getArticles(ArticleRequest $request)
     {
-        //app('fiskkit.manager.article_manager')->getArticle();
+        try {
+            $queryBuilder = app('fiskkit.manager.article_manager')->getQueryBuilder($request->all());
+            dd($request->input());
+            dd('Inside controller');
+        } catch (\Exception $e) {
+        }
     }
 }
