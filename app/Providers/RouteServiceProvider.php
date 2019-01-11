@@ -84,6 +84,11 @@ class RouteServiceProvider extends ServiceProvider
                     $routesDir = __DIR__ . '/..' . '/..' . '/routes';
                     require $routesDir . '/article.route.php';
                 });
+                Route::group([], function () {
+                    $routesDir = __DIR__ . '/..' . '/..' . '/routes';
+                    require $routesDir . '/tag.route.php';
+                });
+
             });
     }
 }
