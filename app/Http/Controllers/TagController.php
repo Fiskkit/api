@@ -23,13 +23,15 @@ namespace App\Http\Controllers;
  */
 
 
+use App\Models\Tag;
+use App\Requests\TagRequest;
 use App\Transformers\TagTransformer;
 
 class TagController extends ApiController
 {
-    public function getTag() {
+    public function getTag(TagRequest $tagRequest) {
         try {
-            $tag = request()->input();
+            $tag = Tag::all();
             return $this->collection($tag, new TagTransformer());
         } catch (\Exception $e) {
             return $this->abortJsonResponse($e->getMessage(), 422);

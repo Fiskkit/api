@@ -15,7 +15,8 @@
  *    description = "This API will give list of all tags",
  *    produces = {"application/json"},
  *    consumes = {"application/json"},
- *    @SWG\Response(response=200, description="Shop details", @SWG\Schema(ref="#/definitions/Tag")),
+ *    @SWG\Parameter( in="query", name = "id", description = "Tag id", type="number"),
+ *    @SWG\Response(response=200, description="Tag details", @SWG\Schema(ref="#/definitions/Tag")),
  *    @SWG\Response(response=422, description="Something went wrong!!!", @SWG\Schema(ref="#/definitions/Error")),
  * )
  */

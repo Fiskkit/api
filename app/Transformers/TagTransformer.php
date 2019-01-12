@@ -15,8 +15,6 @@ use League\Fractal\TransformerAbstract;
 
 class TagTransformer extends TransformerAbstract
 {
-    protected $defaultIncludes = [];
-
     public function transform(Tag $tag)
     {
         return [
@@ -28,7 +26,5 @@ class TagTransformer extends TransformerAbstract
             'name' => (string)$tag->name,
             'triplet' => (int)$tag->triplet
         ];
-
     }
-
 }
