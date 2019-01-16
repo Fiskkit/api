@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
 use League\Fractal\Resource\ResourceInterface;
 use League\Fractal\TransformerAbstract;
 use Closure;
@@ -26,6 +27,16 @@ class ApiController extends Controller
     public function returnJsonResponse($data, $statusCode = 200)
     {
         return new JsonResponse($data, $statusCode);
+    }
+
+    public function item($item, TransformerAbstract $transformer, Closure $callback = null)
+    {
+        $resource = new Item($item, $transformer);
+
+        if (!is_null($callback)) {
+            call_user_func($callback, $resource);
+        }
+        return $this->buildResponse($resource);
     }
 
     public function collection($items, TransformerAbstract $transformer, Closure $callback = null)

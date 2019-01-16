@@ -24,15 +24,22 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Tag;
-use App\Requests\TagRequest;
-use App\Transformers\TagTransformer;
+//use App\Requests\TagRequest;
+//use App\Transformers\TagTransformer;
+//use function PhpParser\filesInDir;
 
 class TagController extends ApiController
 {
-    public function getTag(TagRequest $tagRequest) {
+    public function getTag($tagId = null) {
         try {
-            $tag = Tag::all();
-            return $this->collection($tag, new TagTransformer());
+            if (isset($tagId)) {
+                $tag = Tag::find($tagId);
+                return $tag;
+                //return $this->item($tag, new TagTransformer());
+            }
+                $tag = Tag::all();
+                return $tag;
+                //return $this->collection($tag, new TagTransformer());
         } catch (\Exception $e) {
             return $this->abortJsonResponse($e->getMessage(), 422);
         }
