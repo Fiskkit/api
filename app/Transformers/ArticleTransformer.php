@@ -32,6 +32,7 @@ use League\Fractal\TransformerAbstract;
  *         definition="ArticleById",
  *         @SWG\Property(property="id",type="string"),
  *         @SWG\Property(property="title",type="string"),
+ *         @SWG\Property(property="slug",type="string"),
  *         @SWG\Property(property="author",type="string"),
  *         @SWG\Property(property="comment_count",type="integer"),
  *         @SWG\Property(property="publisher",type="string"),
@@ -57,10 +58,10 @@ class ArticleTransformer extends TransformerAbstract
 
     public function transform(Article $article)
     {
-        //dd($article);
         $data =  [
             "id" => $article->id,
             "title" => $article->title,
+            "slug" => $article->slug,
             "author" => $article->author,
             "comment_count" => $this->getCommentCount($article->id),
             "publisher" => $article->publisher,

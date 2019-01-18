@@ -10,8 +10,6 @@ namespace App\Manager;
 
 
 use App\Models\Article;
-use Carbon\Carbon;
-use Redis;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ArticleManager
@@ -28,7 +26,7 @@ class ArticleManager
         $queryBuilder = Article::select($articleAlias . '.id', $articleAlias . '.title',
             $articleAlias . '.author',$articleAlias . '.publisher', $articleAlias . '.url',
             $articleAlias . '.created_at', $articleAlias . '.image_url', $articleAlias . '.read_mins',
-            $fiskAlias . '.updated_at as last_fisked_at');
+            $articleAlias . '.slug', $fiskAlias . '.updated_at as last_fisked_at');
         $queryBuilder->leftJoin($shareAlias, $shareAlias . '.article_id', '=', $articleAlias . '.id');
         $queryBuilder->leftJoin($fiskAlias, function ($query) use ($fiskAlias, $articleAlias) {
             $query->on("$articleAlias.id", "=", "$fiskAlias.article_id");
