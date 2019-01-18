@@ -10,19 +10,38 @@
  * @SWG\Get(
  *    path = "articles",
  *    tags = {"Article"},
- *    summary = "Shop list within given miles, default is 5 miles",
- *    description = "This API will give list of all shops within given miles, default is 5 miles.",
+ *    summary = "Paginated list of articles",
  *    produces = {"application/json"},
  *    consumes = {"application/json"},
- *    @SWG\Parameter( in="query", name = "display_respected_comments", description = "Display Respected Comments", type="integer"),
- *    @SWG\Parameter( in="query", name = "limit", description = "Limit", type="integer"),
- *    @SWG\Parameter( in="query", name = "offset", description = "offset", type = "integer"),
- *    @SWG\Parameter( in="query", name = "id", description = "User Id", type = "integer"),
- *    @SWG\Parameter( in="query", name = "last_x_hours", description = "Last X Hours", type = "integer"),
- *    @SWG\Parameter( in="query", name = "sort", description = "Sort", type = "string", enum={"updated","created","fisk_updated","fisk_count","bookmark_updated","share_count","social","trending"}),
- *    @SWG\Parameter( in="query", name = "OrderBy", description = "Order by", type = "string", enum={"asc","desc"}),
- *    @SWG\Response(response=200, description="Shop details", @SWG\Schema(ref="#/definitions/Error")),
+ *    @SWG\Parameter( in="query", name = "page", description = "Enter page number (1,2,3,4)", type = "integer"),
+ *    @SWG\Parameter( in="query", name = "perPage", description = "Specify number of records per page to be returned", type = "integer"),
+ *    @SWG\Parameter( in="query", name = "sortBy", description = "Sort results by", type = "string", default = "created_at", enum={"created_at","fisk_count"}),
+ *    @SWG\Parameter( in="query", name = "orderBy", description = "Order ascending | descending", type = "string", default = "desc", enum={"asc","desc"}),
+ *    @SWG\Response(response=200, description="List of articles", @SWG\Schema(ref="#/definitions/Article")),
  *    @SWG\Response(response=422, description="Something went wrong!!!", @SWG\Schema(ref="#/definitions/Error")),
+ *    @SWG\Response(response=404, description="No article found", @SWG\Schema(ref="#/definitions/Error")),
  * )
  */
 Route::get('articles', 'ArticleController@getArticles');
+
+/**
+ * @SWG\Get(
+ *    path = "article/{id}",
+ *    tags = {"Article"},
+ *    summary = "Get article by id",
+ *    produces = {"application/json"},
+ *    consumes = {"application/json"},
+ *    @SWG\Parameter( in="query", name = "includes", description = "includes relational data. Possible value is 'sentence' ", type="string"),
+ *    @SWG\Parameter(
+ *        in = "path",
+ *        name = "id",
+ *        description = "Article id",
+ *        type="string",
+ *        required = true
+ *    ),
+ *    @SWG\Response(response=200, description="List of articles", @SWG\Schema(ref="#/definitions/ArticleById")),
+ *    @SWG\Response(response=422, description="Something went wrong!!!", @SWG\Schema(ref="#/definitions/Error")),
+ *    @SWG\Response(response=404, description="Article not found for given id", @SWG\Schema(ref="#/definitions/Error")),
+ * )
+ */
+Route::get('article/{id}', 'ArticleController@getArticleById');

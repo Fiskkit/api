@@ -11,58 +11,47 @@ namespace App\Manager;
 
 use App\Models\Article;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
+use Redis;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ArticleManager
 {
-    public function getQueryBuilder($filter)
+    public function getQueryBuilder($request)
     {
-        $sortOrder = $filter['OrderBy'] ?? 'desc';
-        $sortOn = $filter['sort'] ?? 'updated';
+        $filter = $request->all();
+        $sortOrder = $filter['orderBy'] ?? 'desc';
+        $sortOn = $filter['sortBy'] ?? 'created_at';
         $articleAlias = 'articles';
         $fiskAlias = 'fisks';
         $shareAlias = 'shares';
 
-        $queryBuilder = Article::select($articleAlias . '.*');
-        $queryBuilder->join($shareAlias, $shareAlias . '.article_id', '=', $articleAlias . '.id');
-        //$queryBuilder->leftJoin($fiskAlias, $fiskAlias . '.article_id', '=', $articleAlias . '.id');
-        $queryBuilder->leftJoin($fiskAlias, function ($query) use($fiskAlias, $articleAlias){
+        $queryBuilder = Article::select($articleAlias . '.id', $articleAlias . '.title',
+            $articleAlias . '.author',$articleAlias . '.publisher', $articleAlias . '.url',
+            $articleAlias . '.created_at', $articleAlias . '.image_url', $articleAlias . '.read_mins',
+            $fiskAlias . '.updated_at as last_fisked_at');
+        $queryBuilder->leftJoin($shareAlias, $shareAlias . '.article_id', '=', $articleAlias . '.id');
+        $queryBuilder->leftJoin($fiskAlias, function ($query) use ($fiskAlias, $articleAlias) {
             $query->on("$articleAlias.id", "=", "$fiskAlias.article_id");
-            $query->where("$fiskAlias.has_content",1);
+            $query->where("$fiskAlias.has_content", 1);
         });
-        $queryBuilder->selectRaw("count($shareAlias.id) as share_count, count($fiskAlias.id) as fisk_count");
+        $queryBuilder->selectRaw("count(DISTINCT $shareAlias.id) as share_count, count(DISTINCT $fiskAlias.id) as fisk_count");
         $queryBuilder->groupBy("$articleAlias.id");
-        //dd($queryBuilder->get());
 
         switch ($sortOn) {
-            case 'created':
+            case 'created_at':
                 $queryBuilder->orderBy($articleAlias . '.created_at', $sortOrder);
-                break;
-            case 'updated':
-                $queryBuilder->orderBy($articleAlias . '.updated_at', $sortOrder);
-                break;
-            case 'social':
-                //$error = $this->createErrorResponse(422, 'No user found.');
-                throw new \Exception('No user found.', 422);
                 break;
             default:
                 $queryBuilder->orderBy($sortOn, $sortOrder);
         }
-
         return $queryBuilder;
-        //dd($queryBuilder->toSql());
     }
 
-    protected function createErrorResponse($status = 400, $messages)
+    public function getUserFromToken($request)
     {
-        $response = array(
-            'error' => array(
-                'status' => $status,
-                'messages' => $messages
-            )
-        );
-
-        return Response::json($response, $status);
+        JWTAuth::parseToken();
+        $token = $request->bearerToken();
+        $user = JWTAuth::toUser($token);
+        return $user;
     }
 }
