@@ -30,16 +30,6 @@ class ApiController extends Controller
         return new JsonResponse($data, $statusCode);
     }
 
-    public function item($item, TransformerAbstract $transformer, Closure $callback = null)
-    {
-        $resource = new Item($item, $transformer);
-
-        if (!is_null($callback)) {
-            call_user_func($callback, $resource);
-        }
-        return $this->buildResponse($resource);
-    }
-
     public function collection($items, TransformerAbstract $transformer, Closure $callback = null)
     {
         $resources = new Collection($items, $transformer);
