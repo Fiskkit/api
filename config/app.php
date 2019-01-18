@@ -176,6 +176,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         \App\Providers\ServiceProvider::class,
 
+        \Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+
     ],
 
     /*
@@ -227,6 +229,6 @@ return [
 
     ],
 
-    'app_url'=>env('APP_URL','https://api.fiskkit.app'),
+    'api_url'=>env('API_URL','https://api.fiskkit.app'),
 
 ];

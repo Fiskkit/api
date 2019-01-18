@@ -15,7 +15,12 @@ class ArticleRequest extends FormRequest
 {
     public function rules()
     {
-        $rules = [];
+        $rules = [
+            'perPage' => 'integer',
+            'page' => 'integer',
+            'sortBy' => 'in:created_at,fisk_count',
+            'orderBy' => 'in:asc,desc'
+        ];
         return $rules;
     }
 }

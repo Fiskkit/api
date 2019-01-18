@@ -9,7 +9,9 @@
 namespace App\Providers;
 
 
+use App\Fractal\Manager\fractalManager;
 use App\Manager\ArticleManager;
+use App\Manager\LoginManager;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 
@@ -41,6 +43,14 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->app->singleton('fiskkit.manager.article_manager', function () {
             return new ArticleManager();
+        });
+
+        $this->app->singleton('fiskkit.fractal.manager.fractal_manager', function () {
+            return new fractalManager();
+        });
+
+        $this->app->singleton('fiskkit.manager.login_manager', function () {
+            return new LoginManager();
         });
     }
 

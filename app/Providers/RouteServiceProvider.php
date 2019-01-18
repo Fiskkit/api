@@ -75,7 +75,7 @@ class RouteServiceProvider extends ServiceProvider
          *
          * @noinspection PhpUndefinedClassInspection
          */
-        Route::domain(config('app.app_url'))
+        Route::domain(config('app.api_url'))
             ->prefix('api/v1/')
             ->middleware('api')
             ->namespace('App\Http\Controllers')
@@ -83,7 +83,13 @@ class RouteServiceProvider extends ServiceProvider
                 Route::group([], function () {
                     $routesDir = __DIR__ . '/..' . '/..' . '/routes';
                     require $routesDir . '/article.route.php';
+                    require $routesDir . '/login.route.php';
                 });
+                Route::group([], function () {
+                    $routesDir = __DIR__ . '/..' . '/..' . '/routes';
+                    require $routesDir . '/tag.route.php';
+                });
+
             });
     }
 }

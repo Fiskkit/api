@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Bookmark;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -27,4 +28,16 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    // Get all users we are following
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'follow_users', 'user_id', 'follow_id')
+            ->withTimestamps();
+    }
+
+    public function bookmarks()
+    {
+        return $this->belongsToMany(Bookmark::class);
+    }
 }

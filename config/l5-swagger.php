@@ -118,6 +118,15 @@ return [
         | Examples of Security definitions
         |--------------------------------------------------------------------------
         */
+
+         'eve_jwt_auth' => [ // Unique name of security
+            'scheme'=>'bearer',
+            'type' => 'apiKey', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
+            'description' => 'Use JWT Authentication Token for valid access of Weedster API',
+            'name' => 'Authorization', // The name of the header or query parameter to be used.
+            'in' => 'header', // The location of the API key. Valid values are "query" or "header".
+        ]
+
         /*
         'api_key_security_example' => [ // Unique name of security
             'type' => 'apiKey', // The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
