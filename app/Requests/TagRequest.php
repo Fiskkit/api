@@ -16,7 +16,7 @@ class TagRequest extends FormRequest
     public function rules()
     {
         return [
-            'tagId' => 'string'
+            'tagId' => 'integer'
         ];
     }
 
