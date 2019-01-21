@@ -15,7 +15,7 @@ use League\Fractal\TransformerAbstract;
 
 /**
  * @SWG\Definition(
- *       definition="Article",
+ *       definition="ArticleWithFiskAndShareCount",
  *     type = "object",
  *     allOf = {
  *          @SWG\Schema(
@@ -23,13 +23,13 @@ use League\Fractal\TransformerAbstract;
  *         @SWG\Property(property="fisk_count",type="integer"),
  *         @SWG\Property(property="last_fisked_at",type="string"),
  *          ),
- *     @SWG\Schema(ref="#/definitions/ArticleById"),
+ *     @SWG\Schema(ref="#/definitions/Article"),
  *     })
  */
 
 /**
  * @SWG\Definition(
- *         definition="ArticleById",
+ *         definition="Article",
  *         @SWG\Property(property="id",type="string"),
  *         @SWG\Property(property="title",type="string"),
  *         @SWG\Property(property="slug",type="string"),
@@ -43,13 +43,39 @@ use League\Fractal\TransformerAbstract;
  *     ),
  */
 
+/**
+ * @SWG\Definition(
+ *         definition="ArticleWithParagraph",
+ *     type = "object",
+ *     allOf = {
+ *          @SWG\Schema(
+ *         @SWG\Property(property="paragraph",type="array",
+ *                  @SWG\Items(
+ *                 type="array",
+ *                      @SWG\Items(
+ *                          type="object",
+ *                          @SWG\Property(property="id", type="integer"),
+ *                          @SWG\Property(property="position", type="integer"),
+ *                          @SWG\Property(property="eop", type="integer"),
+ *                          @SWG\Property(property="body", type="string"),
+ *                          @SWG\Property(property="article_id", type="string"),
+ *                          @SWG\Property(property="updated_at", type="string"),
+ *                          @SWG\Property(property="created_at", type="string"),
+ *                      )
+ *              )
+ *          ),
+ *     ),
+ *     @SWG\Schema(ref="#/definitions/Article"),
+ *  })
+ */
 class ArticleTransformer extends TransformerAbstract
 {
     //protected $availableIncludes = ['sentence'];
     //protected $defaultIncludes = [];
 
-    protected  $shareCount;
-    protected  $paragraph;
+    protected $shareCount;
+    protected $paragraph;
+
     public function __construct($shareCount = null, $paragraph = null)
     {
         $this->shareCount = $shareCount;
@@ -58,7 +84,7 @@ class ArticleTransformer extends TransformerAbstract
 
     public function transform(Article $article)
     {
-        $data =  [
+        $data = [
             "id" => $article->id,
             "title" => $article->title,
             "slug" => $article->slug,
@@ -71,12 +97,12 @@ class ArticleTransformer extends TransformerAbstract
             "read_mins" => $article->read_mins,
         ];
 
-        if($this->shareCount == 'displayShareCount') {
+        if ($this->shareCount == 'displayShareCount') {
             $data["fisk_count"] = $article->fisk_count;
             $data["share_count"] = $article->share_count;
             $data["last_fisked_at"] = $article->last_fisked_at;
         }
-        if($this->paragraph == 'displayParagraph') {
+        if ($this->paragraph == 'displayParagraph') {
             $data["paragraphs"] = $this->getParagraphs($article);
         }
         return $data;
@@ -92,21 +118,21 @@ class ArticleTransformer extends TransformerAbstract
         $orgAlias = 'organizations';
 
         $queryBuilder = SentenceComment::select(
-            $sentenceCommentAlias. '.*',
-            $fiskAlias. '.*',
-            $userAlias. '.*',
-            $orgAlias. '.*'
+            $sentenceCommentAlias . '.*',
+            $fiskAlias . '.*',
+            $userAlias . '.*',
+            $orgAlias . '.*'
         );
         $queryBuilder->leftJoin($respectAlias, $respectAlias . '.comment_id', '=', $sentenceCommentAlias . '.id');
-        $queryBuilder->join($fiskAlias, $fiskAlias. '.id', '=', $sentenceCommentAlias . '.fisk_id');
-        $queryBuilder->join($userAlias, $userAlias. '.id', '=', $fiskAlias . '.id');
-        $queryBuilder->leftJoin($userOrgAlias, $userAlias. '.id', '=', $userOrgAlias . '.user_id');
-        $queryBuilder->leftJoin($orgAlias, $userOrgAlias. '.org_id', '=', $orgAlias . '.id');
+        $queryBuilder->join($fiskAlias, $fiskAlias . '.id', '=', $sentenceCommentAlias . '.fisk_id');
+        $queryBuilder->join($userAlias, $userAlias . '.id', '=', $fiskAlias . '.id');
+        $queryBuilder->leftJoin($userOrgAlias, $userAlias . '.id', '=', $userOrgAlias . '.user_id');
+        $queryBuilder->leftJoin($orgAlias, $userOrgAlias . '.org_id', '=', $orgAlias . '.id');
         $queryBuilder->selectRaw("count($respectAlias.id) as respect_count");
-        $queryBuilder->where([$fiskAlias.'.article_id' => $article->id]);
-        $queryBuilder->where($sentenceCommentAlias.'.word_count', '>', 4);
+        $queryBuilder->where([$fiskAlias . '.article_id' => $article->id]);
+        $queryBuilder->where($sentenceCommentAlias . '.word_count', '>', 4);
         $queryBuilder->orderBy('respect_count', 'desc');
-        $queryBuilder->groupBy($fiskAlias. '.id');
+        $queryBuilder->groupBy($fiskAlias . '.id');
         $queryBuilder->take(4);
 
         return $this->collection($queryBuilder->get(), new SentenceCommentTransformer());
@@ -133,9 +159,9 @@ class ArticleTransformer extends TransformerAbstract
         $sentenceCommentAlias = 'sentence_comments';
         $sentenceAlias = 'sentences';
         $queryBuilder = SentenceComment::query();
-        $queryBuilder->join($sentenceAlias, $sentenceAlias . '.id', '=', $sentenceCommentAlias. '.sentence_id')
+        $queryBuilder->join($sentenceAlias, $sentenceAlias . '.id', '=', $sentenceCommentAlias . '.sentence_id')
             ->where($sentenceAlias . '.article_id', $articleId);
 
-        return $queryBuilder->count($sentenceCommentAlias.'.id');
+        return $queryBuilder->count($sentenceCommentAlias . '.id');
     }
 }
