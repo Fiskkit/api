@@ -16,15 +16,17 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ArticleController extends ApiController
 {
+    protected $articleManager;
     public function __construct()
     {
+        $this->articleManager = app('fiskkit.manager.article_manager');
         //$this->middleware('jwt.auth');
     }
 
     public function getArticles(ArticleRequest $request)
     {
         try {
-            $articles = app('fiskkit.manager.article_manager')->getQueryBuilder($request);
+            $articles = $this->articleManager->getQueryBuilder($request);
             if ($articles->get()->count()) {
                 return $this->paginateCollection($articles, new ArticleTransformer('displayShareCount'));
             }
@@ -42,6 +44,19 @@ class ArticleController extends ApiController
             return $this->item($article, new ArticleTransformer('doNotDisplay', 'displayParagraph'));
         } catch (ModelNotFoundException $e) {
             return $this->abortJsonResponse('Article not found for given id', 404);
+        } catch (\Exception $e) {
+            return $this->abortJsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    public function getArticleBySlug($slug)
+    {
+        try {
+            $article = $this->articleManager->getArticleBySlug($slug);
+            if($article) {
+                return $this->item($article, new ArticleTransformer('doNotDisplay', 'displayParagraph'));
+            }
+            return $this->abortJsonResponse('Article not found for given slug', 404);
         } catch (\Exception $e) {
             return $this->abortJsonResponse($e->getMessage(), 422);
         }

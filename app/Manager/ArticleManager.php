@@ -52,4 +52,9 @@ class ArticleManager
         $user = JWTAuth::toUser($token);
         return $user;
     }
+
+    public function getArticleBySlug($slug)
+    {
+        return Article::where('slug', $slug)->first();
+    }
 }
